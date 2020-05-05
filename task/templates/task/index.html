@@ -1,0 +1,69 @@
+{% extends "layout/base.html" %}
+{% block content %}
+<section class="my-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <a href="{% url 'task-add' %}" class="btn btn-primary mb-3">Add Task</a>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                          <th>Task</th>
+                          <th>Done</th>
+                          <th>Detail</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for task in tasks %}
+                        {% if task.active %}
+                        <tr class="table-success">
+                            <td><del>{{ task.task }}</del></td>
+                            <td>Completed</td>
+                            <td><a href="{% url 'task-detail' task.id %}" class="btn btn-success">Detail</a></td>
+                            <td><a href="{% url 'task-update' task.id %}" class="btn btn-warning">Edit</a></td>
+                            <td><a href="{% url 'task-delete' task.id %}" class="btn btn-danger">Supprimer</a></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{ task.task }}</td>
+                            <td>Not Completed</td>
+                            <td><a href="{% url 'task-detail' task.id %}" class="btn btn-success">Detail</a></td>
+                            <td><a href="{% url 'task-update' task.id %}" class="btn btn-warning">Edit</a></td>
+                            <td><a href="{% url 'task-delete' task.id %}" class="btn btn-danger">Supprimer</a></td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="pagination">
+            <span class="step-links">
+                {% if tasks.has_previous %}
+                    <a href="?page=1" class="btn btn-outline-primary">&laquo; first</a>
+                    <a href="?page={{ tasks.previous_page_number }}" class="btn btn-outline-primary">previous</a>
+                {% endif %}
+
+                {% for num in tasks.paginator.page_range %}
+                    {% if tasks.number == num %}
+                        <a href="?page={{ num }}" class="btn btn-outline-primary">{{ num }}</a>
+                    {% elif num > tasks.number|add:'-3' and num < tasks.number|add:'3' %}
+                        <a href="?page={{ num }}" class="btn btn-outline-primary">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if tasks.has_next %}
+                    <a href="?page={{ tasks.next_page_number }}" class="btn btn-outline-primary">next</a>
+                    <a href="?page={{ tasks.paginator.num_pages }}" class="btn btn-outline-primary">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+    </div>
+</section>
+{% endblock content %}
